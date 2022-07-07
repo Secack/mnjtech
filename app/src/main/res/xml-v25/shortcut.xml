@@ -1,0 +1,12 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:shortcutId="download"
+        android:shortcutShortLabel="@string/online_download">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="mnjtech://online_download"
+            android:targetClass="su.akari.mnjtech.ui.activity.MainActivity"
+            android:targetPackage="su.akari.mnjtech" />
+    </shortcut>
+</shortcuts>

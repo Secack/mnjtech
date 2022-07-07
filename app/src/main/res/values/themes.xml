@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MNjtech" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
+    <style name="Theme.MNjtech.NoActionBar.Splash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.MNjtech</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/compose_logo</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
+    </style>
+</resources>

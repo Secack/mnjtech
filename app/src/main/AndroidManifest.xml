@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:name=".MNjtechApp"
+        android:allowBackup="true"
+        android:extractNativeLibs="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.MNjtech"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".ui.activity.CrashActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:theme="@style/Theme.MNjtech" />
+
+        <service
+            android:name=".service.VideoDownloadService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode|screenLayout|smallestScreenSize"
+            android:exported="true"
+            android:launchMode="standard"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/Theme.MNjtech.NoActionBar.Splash"
+            android:windowSoftInputMode="adjustResize"
+            tools:targetApi="n">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcut" />
+        </activity>
+    </application>
+
+</manifest>

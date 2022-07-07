@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">掌上南工</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="logging_in">Logging in</string>
+    <string name="wait_for_a_while">Please wait for a while</string>
+    <string name="login_successful">Login successful</string>
+    <string name="login_failed">Login failed</string>
+    <string name="ok">OK</string>
+    <string name="online_download">Online download</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="ask">Ask</string>
+    <string name="tip">Tip</string>
+</resources>

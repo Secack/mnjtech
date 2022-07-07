@@ -1,0 +1,62 @@
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.event.head_commit.message, '[skip ci]') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Write key
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo buildWithGitSuffix=true >> local.properties
+          echo storePassword=${{ secrets.KEYSTORE_PASSWORD }} >> local.properties
+          echo keyAlias=${{ secrets.KEYSTORE_ALIAS }} >> local.properties
+          echo keyPassword='${{ secrets.KEYSTORE_ALIAS_PASSWORD }}' >> local.properties
+          echo storeFile=../key.jks >> local.properties
+          echo ${{ secrets.KEYSTORE }} | base64 --decode > key.jks
+      - name: Cache deps
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            !~/.gradle/caches/build-cache-*
+          key: gradle-deps-app-${{ hashFiles('**/build.gradle.kts', '**/versions.properties') }}
+          restore-keys: |
+            gradle-deps
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/build-cache-*
+          key: gradle-builds-app-${{ github.sha }}
+          restore-keys: |
+            gradle-builds
+      - name: Build
+        id: build
+        run: |
+          echo 'org.gradle.caching=true' >> gradle.properties
+          echo 'org.gradle.parallel=true' >> gradle.properties
+          echo 'org.gradle.vfs.watch=true' >> gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx4096m' >> gradle.properties
+          ./gradlew :app:validateSigningDebug
+          ./gradlew :app:assembleRelease
+          echo "::set-output name=releaseName::`ls app/build/outputs/apk/release/*.apk | awk -F '(/|.apk)' '{print $6}'`"
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.build.outputs.releaseName }}
+          path: "app/build/outputs/apk/release/*.apk"
