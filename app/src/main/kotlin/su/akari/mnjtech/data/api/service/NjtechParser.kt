@@ -10,6 +10,8 @@ import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Attribute
 import org.jsoup.nodes.Element
+import su.akari.mnjtech.R
+import su.akari.mnjtech.RES
 import su.akari.mnjtech.data.api.URL_I_NJTECH
 import su.akari.mnjtech.data.api.URL_JWGL
 import su.akari.mnjtech.data.model.jwgl.CourseItem
@@ -19,7 +21,9 @@ import su.akari.mnjtech.util.Log
 import su.akari.mnjtech.util.autoRetry
 import su.akari.mnjtech.util.fromJsonElement
 import su.akari.mnjtech.util.get
+import su.akari.mnjtech.util.getRawTextFile
 import su.akari.mnjtech.util.network.*
+import java.security.MessageDigest
 import kotlin.math.pow
 
 class NjtechParser(
@@ -33,6 +37,20 @@ class NjtechParser(
         with(okHttpClient) {
             clearSession()
             val resp = get(URL_I_NJTECH)
+            val keys = RES.getRawTextFile(R.raw.login_keys)
+            suspend fun disCaptcha(i: Int): String {
+                if (i > 20) return "0000";
+                val img = get("https://u.njtech.edu.cn/cas/captcha.jpg").body.bytes()
+                val sha1 = MessageDigest.getInstance("SHA-1").apply { update(img) }.digest()
+                    .joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
+                Log.e(sha1)
+                return keys.firstOrNull { it.split(' ')[0] == sha1 }
+                    ?.let { return it.split(' ')[1] } ?: run {
+                    disCaptcha(i + 1)
+                }
+            }
+
+            val captcha = disCaptcha(0)
             with(FormBody.Builder()) {
                 Jsoup.parse(resp.body.string()).run {
                     select("div.login-submit").first()?.run {
@@ -48,6 +66,7 @@ class NjtechParser(
                     }
                     add("username", username)
                     add("password", password)
+                    add("captcha", captcha)
                     build()
                 }
             }.let { body ->

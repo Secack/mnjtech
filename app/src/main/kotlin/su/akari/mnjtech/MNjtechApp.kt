@@ -3,6 +3,7 @@ package su.akari.mnjtech
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import androidx.room.Room
 import okhttp3.Dns
 import okhttp3.OkHttpClient
@@ -48,6 +49,7 @@ import java.io.File
 import java.net.Inet4Address
 import java.util.concurrent.TimeUnit
 
+lateinit var RES: Resources
 lateinit var PR: PreferenceRepo
 
 class MNjtechApp : Application() {
@@ -67,7 +69,7 @@ class MNjtechApp : Application() {
         }
 
         PR = get()
-
+        RES = resources
     }
 
     override fun attachBaseContext(base: Context?) {

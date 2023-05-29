@@ -3,8 +3,10 @@ package su.akari.mnjtech.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Resources
 import android.os.PowerManager
 import android.widget.Toast
+import androidx.annotation.RawRes
 
 val Context.maxBrightness
     get() = with(getSystemService(Context.POWER_SERVICE) as PowerManager) {
@@ -34,3 +36,6 @@ fun Context.stringResource(id: Int) = this.resources.getString(id)
 
 fun Context.stringResource(id: Int, vararg formatArgs: Any) =
     this.resources.getString(id, *formatArgs)
+
+fun Resources.getRawTextFile(@RawRes id: Int) =
+    openRawResource(id).bufferedReader().use { it.readLines() }

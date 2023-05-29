@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -16,18 +15,17 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.viewModel
 import su.akari.mnjtech.data.model.profile.Profile
 import su.akari.mnjtech.ui.component.LoadingAnim
 import su.akari.mnjtech.ui.component.Md3BottomNavigation
 import su.akari.mnjtech.ui.local.LocalActivity
 import su.akari.mnjtech.ui.screen.index.page.CurriculumPage
-import su.akari.mnjtech.ui.screen.index.page.FuncPage
 import su.akari.mnjtech.ui.screen.index.page.HomePage
 import su.akari.mnjtech.ui.screen.index.page.SelfPage
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.launch
-import org.koin.androidx.compose.viewModel
 
 @Composable
 fun IndexScreen() {
@@ -55,8 +53,7 @@ fun IndexScreen() {
                     when (page) {
                         0 -> HomePage()
                         1 -> CurriculumPage(viewModel)
-                        2 -> FuncPage()
-                        3 -> SelfPage(viewModel)
+                        2 -> SelfPage(viewModel)
                     }
                 }
                 BottomBar(currentPage = pagerState.currentPage, scrollToPage = {
@@ -92,15 +89,6 @@ private fun BottomBar(currentPage: Int, scrollToPage: (Int) -> Unit) {
         )
         NavigationBarItem(selected = currentPage == 2, onClick = {
             scrollToPage(2)
-        }, icon = {
-            Icon(imageVector = Icons.Outlined.Category, contentDescription = null)
-        }, label = {
-            Text(text = "功能")
-        }, alwaysShowLabel = false
-        )
-
-        NavigationBarItem(selected = currentPage == 3, onClick = {
-            scrollToPage(3)
         }, icon = {
             Icon(imageVector = Icons.Outlined.Person, contentDescription = null)
         }, label = {
