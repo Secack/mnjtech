@@ -37,15 +37,16 @@ class NjtechParser(
         with(okHttpClient) {
             clearSession()
             val resp = get(URL_I_NJTECH)
+
             val keys = RES.getRawTextFile(R.raw.login_keys)
             suspend fun disCaptcha(i: Int): String {
                 if (i > 20) return "0000";
-                val img = get("https://u.njtech.edu.cn/cas/captcha.jpg").body.bytes()
-                val sha1 = MessageDigest.getInstance("SHA-1").apply { update(img) }.digest()
-                    .joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
-                Log.e(sha1)
+                val sha1 = MessageDigest.getInstance("SHA-1")
+                    .apply { update(get("https://u.njtech.edu.cn/cas/captcha.jpg").body.bytes()) }
+                    .digest()
+                    .joinToString(separator = "") { "%02x".format(it) }
                 return keys.firstOrNull { it.split(' ')[0] == sha1 }
-                    ?.let { return it.split(' ')[1] } ?: run {
+                    ?.let { it.split(' ')[1] } ?: run {
                     disCaptcha(i + 1)
                 }
             }

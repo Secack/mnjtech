@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,35 +32,24 @@ import su.akari.mnjtech.util.getHourDisplay
 fun HomePage() {
     val list = listOf(
         FuncItem(
-            title = "南工在线",
-            route = Destinations.OlIndex
-        ),
-        FuncItem(
-            title = "成绩查询",
-            route = Destinations.Score
-        ),
-        FuncItem(
-            title = "查空教室",
-            route = Destinations.FreeRoom
-        ),
-        FuncItem(
-            title = "教学评价",
-            route = Destinations.Evaluation
+            title = "南工在线", route = Destinations.OlIndex
+        ), FuncItem(
+            title = "成绩查询", route = Destinations.Score
+        ), FuncItem(
+            title = "查空教室", route = Destinations.FreeRoom
+        ), FuncItem(
+            title = "教学评价", route = Destinations.Evaluation
         )
     )
     val userData = LocalSelfData.current
     val date = remember {
         getHourDisplay()
     }
-    Scaffold(
-        topBar = {
-            Md3TopBar(
-                title = {
-                    Text(text = "${date}好，${userData.name}")
-                }
-            )
-        }
-    ) { padding ->
+    Scaffold(topBar = {
+        Md3TopBar(title = {
+            Text(text = "${date}好，${userData.name}")
+        })
+    }) { padding ->
         Centered(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,29 +77,26 @@ fun FuncCard(
     funcItem: FuncItem
 ) {
     val navController = LocalNavController.current
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .height(80.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.elevatedCardElevation(),
         onClick = {
             navController.navigate(funcItem.route)
-        }
-    ) {
+        }) {
         Centered(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Text(
                 text = funcItem.title,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
-
-                )
+            )
         }
     }
 }
 
 data class FuncItem(
-    val title: String,
-    val route: String
+    val title: String, val route: String
 )

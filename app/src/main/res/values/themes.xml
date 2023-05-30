@@ -4,7 +4,7 @@
 
     <style name="Theme.MNjtech.NoActionBar.Splash" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/Theme.MNjtech</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/compose_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
         <item name="windowSplashScreenBackground">@color/white</item>
     </style>
 </resources>
