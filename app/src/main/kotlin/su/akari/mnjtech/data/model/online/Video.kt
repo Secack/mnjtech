@@ -28,7 +28,7 @@ data class Video(
     val year: String?,
     val genre: String?,
     val topic: Topic?,
-    val topicId: Int?
+    val value: Int?
 )
 
 data class Score(

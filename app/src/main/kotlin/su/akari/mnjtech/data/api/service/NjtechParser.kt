@@ -22,7 +22,12 @@ import su.akari.mnjtech.util.autoRetry
 import su.akari.mnjtech.util.fromJsonElement
 import su.akari.mnjtech.util.get
 import su.akari.mnjtech.util.getRawTextFile
-import su.akari.mnjtech.util.network.*
+import su.akari.mnjtech.util.network.clearSession
+import su.akari.mnjtech.util.network.get
+import su.akari.mnjtech.util.network.getString
+import su.akari.mnjtech.util.network.initSession
+import su.akari.mnjtech.util.network.post
+import su.akari.mnjtech.util.network.updateSession
 import java.security.MessageDigest
 import kotlin.math.pow
 
@@ -43,12 +48,11 @@ class NjtechParser(
                 if (i > 20) return "0000";
                 val sha1 = MessageDigest.getInstance("SHA-1")
                     .apply { update(get("https://u.njtech.edu.cn/cas/captcha.jpg").body.bytes()) }
-                    .digest()
-                    .joinToString(separator = "") { "%02x".format(it) }
-                return keys.firstOrNull { it.split(' ')[0] == sha1 }
-                    ?.let { it.split(' ')[1] } ?: run {
-                    disCaptcha(i + 1)
-                }
+                    .digest().joinToString(separator = "") { "%02x".format(it) }
+                return keys.firstOrNull { it.split(' ')[0] == sha1 }?.let { it.split(' ')[1] }
+                    ?: run {
+                        disCaptcha(i + 1)
+                    }
             }
 
             val captcha = disCaptcha(0)
@@ -80,6 +84,24 @@ class NjtechParser(
                             .let {
                                 require(it.isEmpty()) { it }
                             }
+                    }
+                    runCatching {
+                        Regex("v46ip=\'(.*?)\'").find(getString("http://10.50.255.11"))?.let {
+                            val ip = it.groupValues[1]
+                            val channel = when (provider) {
+                                1 -> "@cmcc"
+                                2 -> "@telecom"
+                                else -> ""
+                            }
+                            post(
+                                url = "http://10.50.255.11:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=10.50.255.11&iTermType=2&wlanuserip=$ip&wlanacip=null&wlanacname=null&mac=00-00-00-00-00-00&ip=$ip&enAdvert=0&queryACIP=0&jsVersion=2.4.3&loginMethod=1",
+                                body = FormBody.Builder().add("DDDDD", ",0,$username$channel")
+                                    .add("upass", password).add("R1", "0").add("R2", "0")
+                                    .add("R3", "0")
+                                    .add("R6", "0").add("para", "00").add("0MKKey", "123456")
+                                    .build()
+                            )
+                        }
                     }
                     getString("$URL_I_NJTECH/njtech/wifiresponseinfo").fromJsonElement().run {
                         runCatching {

@@ -263,7 +263,7 @@ fun CarousePager(item: List<Video>) {
             .padding(bottom = 8.dp)
             .clip(MaterialTheme.shapes.small)
             .clickable {
-                navController.navigate("${Destinations.OlDetail}/${item[pagerState.currentPage].topicId}")
+                navController.navigate("${Destinations.OlDetail}/${item[pagerState.currentPage].value}")
             },
         contentAlignment = Alignment.BottomCenter
     ) {
