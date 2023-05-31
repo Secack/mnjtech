@@ -85,6 +85,21 @@ class NjtechParser(
                                 require(it.isEmpty()) { it }
                             }
                     }
+
+                    runCatching {
+                        post(
+                            url = "http://202.119.249.54/eportal/InterFace.do?method=login",
+                            body = FormBody.Builder().add("userId", username)
+                                .add("password", password)
+                                .add("passwordEncrypt", "${false}")
+                                .add(
+                                    "queryString",
+                                    "wlanuserip=8251170f6ab63a10166afe18d26bf318&wlanacname=5a740978a9e9b514&ssid=&nasip=1d4861c3af775875dcbb2ccf0f316216&snmpagentip=&mac=6abbd21c8acfcb8cbbc78969d01899a9&t=wireless-v2&url=c9673a58c390d256a95fd5b4ab750c85c61bb616bcf68fc57be080281710b7385fd00c45368e4f6d6a7d0a74aa8e4490&apmac=&nasid=5a740978a9e9b514&vid=b1e0e7bfda3e284d&port=565accaf05848755&nasportid=5b9da5b08a53a5407f78812b658307e0550027c72909d118192d98135210152a"
+                                )
+                                .build()
+                        )
+                    }
+
                     runCatching {
                         Regex("v46ip=\'(.*?)\'").find(getString("http://10.50.255.11"))?.let {
                             val ip = it.groupValues[1]
